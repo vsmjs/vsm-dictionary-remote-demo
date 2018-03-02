@@ -30,7 +30,7 @@ A demo of this demo connects to a real server (see at end).
 
 This is VsmDictionaryRemoteDemo:
 
-- The name 'VsmDictionary-_RemoteDemo_' is meant to contrast the name of
+- The name 'VsmDictionary-_Remote_-Demo' is meant to contrast with the name of
   the sibling package
   '[VsmDictionary-_Local_](https://github.com/vsmjs/vsm-dictionary-local)'.
 - Unlike VsmDictionaryLocal which stores the data locally (=in-memory),
@@ -38,7 +38,7 @@ This is VsmDictionaryRemoteDemo:
   stores the data and makes it accessible through an API.
 - VsmDictionaryRemoteDemo extends the VsmDictionary parent class, and provides
   a bare-minimum implementation that follows the vsm-dictionary
-  [specification](https://github.com/vsmjs/vsm-dictionary/Dictionary.spec.md).
+  [specification](https://github.com/vsmjs/vsm-dictionary/blob/master/Dictionary.spec.md).
   - It simply makes the assumption that the webserver has a REST API that
     literally supports all the spec options, and that the server returns data
     in the exact same way as a VsmDictionary is supposed to pass it onwards.
@@ -66,7 +66,7 @@ Because of the above,
 
 Like all VsmDictionary subclass implementations, this package follows
 the parent class
-[specification](https://github.com/vsmjs/vsm-dictionary/Dictionary.spec.md),
+[specification](https://github.com/vsmjs/vsm-dictionary/blob/master/Dictionary.spec.md),
 although _only a fraction of it_, without adding much more.  
 &bull; <span style="font-size: smaller;">
 (Note: we simply use the name 'DictionaryRemoteDemo' for VsmDictionaryRemoteDemo,
@@ -94,7 +94,7 @@ Run `npm run testw`, which automatically reruns tests on any file change.
 
 The demo makes a further subclass of VsmDictionaryRemoteDemo,
 and adds code to parse the specific data that the dictionary-webservice
-'PubDictionaries.org' returns.    
+'[PubDictionaries.org](http://pubdictionaries.org/)' returns.  
 The demo includes _only_ string-search functionality, on a single
 dictionary of PubDictionaries at a time, and without support for any options.
 
