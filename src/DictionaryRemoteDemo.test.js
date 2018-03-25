@@ -34,41 +34,45 @@ describe('DictionaryRemoteDemo.js', function() {
   // we can just write: `nock.reply(...R('a', 'b'));`.
   var R = (...args) => [200, () => JSON.stringify([...args])];
 
-  describe('prepGetOptions()', function() {
+
+  describe('_prepGetOptions()', function() {
     it('properly encodes the option properties\' values as URI components ' +
-    'and also adds a z-property' , function() {
+      'and also adds a z-property' , function() {
       var opt = {
-        filter: {id: ['A$', 'B$'], name: 'Ab C'}, sort: 'id',
-        page: 2,  perPage: 5
-      };
-      dict._prepGetOptions(opt, ['id', 'name']).
-      should.deep.equal({
-        filter: { id: [ 'A%24', 'B%24' ], name: [ 'Ab%20C' ] },
+        filter: { id: ['A$', 'B$'], name: 'Ab C' },
         sort: 'id',
-        page: '2',
-        perPage: '5',
-        z: [ 'true' ]
-      });
+        page: 2,
+        perPage: 5
+      };
+      dict._prepGetOptions(opt, ['id', 'name'])
+        .should.deep.equal({
+          filter: { id: [ 'A%24', 'B%24' ], name: [ 'Ab%20C' ] },
+          sort: 'id',
+          page: '2',
+          perPage: '5',
+          z: [ 'true' ]
+        });
     });
 
     it('returns a non-empty default option object when input option is 0',
-    function() {
+      function() {
       var opt = 0;
       dict._prepGetOptions(0, []).should.deep.equal(
-        {filter: {}, sort: '', z: [ 'true' ], page: '', perPage: '' });
+        { filter: {}, sort: '', z: [ 'true' ], page: '', perPage: '' } );
     });
 
-    it('adds a proper sort property when called with sortKeys (3rd argument)' + 
-    ' when no sort property is defined in the initial options object', 
-    function() {
-      dict._prepGetOptions({filter: {dictID: 'somedictID'}}, ['dictID'], ['dictID']).
-      should.deep.equal({
-        filter: { dictID: [ 'somedictID' ] },
-        sort: { dictID: [] },
-        z: [ 'true' ],
-        page: '',
-        perPage: ''
-      });
+    it('adds a proper sort property, when called with sortKeys (3rd arg) and ' +
+      'no sort property is defined in the initial options object', function() {
+      dict._prepGetOptions(
+        { filter: { dictID: 'somedictID' } }, ['dictID'], ['dictID']
+      )
+        .should.deep.equal({
+          filter: { dictID: [ 'somedictID' ] },
+          sort: { dictID: [] },
+          z: [ 'true' ],
+          page: '',
+          perPage: ''
+        });
     });
   });
 
