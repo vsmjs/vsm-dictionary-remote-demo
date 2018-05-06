@@ -240,7 +240,7 @@ describe('DictionaryRemoteDemo.js', function() {
         .reply(...R('test'));
       dict.getMatchesForString('5', 0, (err, res) => {
         res.should.deep.equal({items: [
-          { id:'00:5e+0', dictID:'00', str :'5', descr:'[number]', type:'N' },
+          { id:'00:5e+0', dictID:'00', str :'5', descr:'number', type:'N' },
           'test',
         ]});
         cb();
