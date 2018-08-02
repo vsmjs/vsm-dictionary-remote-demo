@@ -36,10 +36,10 @@ describe('DictionaryRemoteDemo.js', function() {
 
 
   describe('_prepGetOptions()', function() {
-    it('properly encodes the option properties\' values as URI components ' +
-      'and also adds a z-property' , function() {
+    it('properly encodes the `options` properties\' values as URI components ' +
+      'and also adds a `z`-property' , function() {
       var opt = {
-        filter: { id: ['A$', 'B$'], name: 'Ab C' },
+        filter: { id: ['A$', 'B$'], name: ['Ab C'] },
         sort: 'id',
         page: 2,
         perPage: 5
@@ -54,17 +54,16 @@ describe('DictionaryRemoteDemo.js', function() {
         });
     });
 
-    it('returns a non-empty default option object when input option is 0',
+    it('returns a non-empty default options object when `options` is `{}`',
       function() {
-      var opt = 0;
-      dict._prepGetOptions(0, []).should.deep.equal(
+      dict._prepGetOptions({}, []).should.deep.equal(
         { filter: {}, sort: '', z: [ 'true' ], page: '', perPage: '' } );
     });
 
     it('adds a proper sort property, when called with sortKeys (3rd arg) and ' +
       'no sort property is defined in the initial options object', function() {
       dict._prepGetOptions(
-        { filter: { dictID: 'somedictID' } }, ['dictID'], ['dictID']
+        { filter: { dictID: ['somedictID'] } }, ['dictID'], ['dictID']
       )
         .should.deep.equal({
           filter: { dictID: [ 'somedictID' ] },
@@ -81,7 +80,7 @@ describe('DictionaryRemoteDemo.js', function() {
     it('calls its URL with given options filled in, URL-encoded; ' +
       'and returns the data it got back, JSON-parsed', function(cb) {
       var opt = {
-        filter: {id: ['A', 'B'], name: 'Ab C'}, sort: 'id',
+        filter: {id: ['A', 'B'], name: ['Ab C']}, sort: 'id',
         page: 2,  perPage: 5
       };
       // - A test only succeeds if 'dict' actually requests the specified URL.
@@ -102,7 +101,7 @@ describe('DictionaryRemoteDemo.js', function() {
       nock(urlBase)
         .get('/dic?id=&name=&sort=&page=&perPage=')
         .reply(...R('test'));
-      dict.getDictInfos(0, (err, res) => {
+      dict.getDictInfos({}, (err, res) => {
         expect(err).to.equal(null);
         res.should.deep.equal({items: ['test']});
         cb();
@@ -115,7 +114,8 @@ describe('DictionaryRemoteDemo.js', function() {
     it('calls its URL with given options filled in, URL-encoded; ' +
       'and returns the data it got back, JSON-parsed', function(cb) {
       var opt = {
-        filter: {id: 'A:01', dictID: 'A'}, sort: 'dictID',
+        filter: { id: ['A:01'], dictID: ['A'] },
+        sort: 'dictID',
         z: true,  page: 2,  perPage: 5
       };
       nock(urlBase)
@@ -132,18 +132,18 @@ describe('DictionaryRemoteDemo.js', function() {
       nock(urlBase)
         .get('/ent?id=&dictID=&z=true&sort=&page=&perPage=')
         .reply(...R('test'));
-      dict.getEntries(0, (err, res) => {
+      dict.getEntries({}, (err, res) => {
         expect(err).to.equal(null);
         res.should.deep.equal({items: ['test']});
         cb();
       });
     });
 
-    it('calls its URL, also for no z-object', function(cb) {
+    it('calls its URL, also when requesting no `z` property', function(cb) {
       nock(urlBase)
-        .get('/ent?id=&dictID=&z=false&sort=&page=&perPage=')
+        .get('/ent?id=&dictID=&z=&sort=&page=&perPage=')
         .reply(...R('test'));
-      dict.getEntries({z: false}, (err, res) => {
+      dict.getEntries({z: []}, (err, res) => {
         expect(err).to.equal(null);
         res.should.deep.equal({items: ['test']});
         cb();
@@ -152,9 +152,9 @@ describe('DictionaryRemoteDemo.js', function() {
 
     it('calls its URL, also with z-pruning', function(cb) {
       nock(urlBase)
-        .get('/ent?id=&dictID=&z=x,y,z&sort=&page=&perPage=')
+        .get('/ent?id=&dictID=&z=x,y,z,A%24&sort=&page=&perPage=')
         .reply(...R('test'));
-      dict.getEntries({z: ['x', 'y', 'z']}, (err, res) => {
+      dict.getEntries({z: ['x', 'y', 'z', 'A$']}, (err, res) => {
         expect(err).to.equal(null);
         res.should.deep.equal({items: ['test']});
         cb();
@@ -181,7 +181,7 @@ describe('DictionaryRemoteDemo.js', function() {
       nock(urlBase)
         .get('/ref?str=&page=&perPage=')
         .reply(...R('test'));
-      dict.getRefTerms(0, (err, res) => {
+      dict.getRefTerms({}, (err, res) => {
         expect(err).to.equal(null);
         res.should.deep.equal({items: ['test']});
         cb();
@@ -213,7 +213,7 @@ describe('DictionaryRemoteDemo.js', function() {
         .get('/mat?q=x&dictID=&sort=&page=&perPage=')
         .reply(...R('test'))
         .on('replied', () => { called = true; });
-      dict.getMatchesForString('x', 0, (err, res) => {
+      dict.getMatchesForString('x', {}, (err, res) => {
         expect(err).to.equal(null);
         called.should.equal(true);  // Test that this works, for the next test.
         res.should.deep.equal({items: ['test']});
@@ -226,7 +226,7 @@ describe('DictionaryRemoteDemo.js', function() {
       var called = false;
       nock(urlBase)
         .on('replied', () => { called = true; });
-      dict.getMatchesForString('', 0, (err, res) => {
+      dict.getMatchesForString('', {}, (err, res) => {
         expect(err).to.equal(null);
         called.should.equal(false);  // Test that no request was made.
         res.should.deep.equal({items: []});
@@ -238,7 +238,7 @@ describe('DictionaryRemoteDemo.js', function() {
       nock(urlBase)
         .get('/mat?q=5&dictID=&sort=&page=&perPage=')
         .reply(...R('test'));
-      dict.getMatchesForString('5', 0, (err, res) => {
+      dict.getMatchesForString('5', {}, (err, res) => {
         res.should.deep.equal({items: [
           { id:'00:5e+0', dictID:'00', str :'5', descr:'number', type:'N' },
           'test',
@@ -251,7 +251,7 @@ describe('DictionaryRemoteDemo.js', function() {
       nock(urlBase)
         .get('/mat?q=5&dictID=&sort=&page=&perPage=')
         .reply(200, () => 'not a JSON string');  // Make it send invalid data.
-      dict.getMatchesForString('5', 0, (err, res) => {
+      dict.getMatchesForString('5', {}, (err, res) => {
         // It should forward a JSON-parsing error, which we receive here:
         err.toString().startsWith('SyntaxError').should.equal(true);
         cb();
@@ -263,7 +263,7 @@ describe('DictionaryRemoteDemo.js', function() {
       nock(urlBase)
         .get('/mat?q=5&dictID=&sort=&page=&perPage=')
         .reply(200, () => '"not an Array"');
-      dict.getMatchesForString('5', 0, (err, res) => {
+      dict.getMatchesForString('5', {}, (err, res) => {
         err.should.equal('The server did not send an Array');
         cb();
       });
@@ -287,7 +287,8 @@ describe('DictionaryRemoteDemo.js', function() {
         super.getMatchesForString(str, options, (err, res) => {
           if (err)  return cb(err);
           var arr = res.items.map(e =>
-            e.type ? e :  // Don't convert match-objects generated by parent-class.
+            e.type ?
+            e :  // Don't convert N/R match-objects generated by parent class.
             ({
               id:     e.identifier,
               dictID: options.filter.dictID,
@@ -305,11 +306,10 @@ describe('DictionaryRemoteDemo.js', function() {
     }
 
     it('returns match-objects for entries that match a string', function(cb) {
-      // 2.) Set up 'nock' so it replies to the URL that is supposed to
-      // be requested.
+      // 2.) Set up 'nock' so it replies to the URL
+      // that DictionaryPubDictionaries is supposed to request to.
       var str = 'cell b';
       var dictID = 'GO-BP';
-
       nock('http://pubdictionaries.org')
         .get(`/dictionaries/${encodeURIComponent(dictID)}` +
              `/prefix_completion?term=${encodeURIComponent(str)}`)
@@ -342,12 +342,12 @@ describe('DictionaryRemoteDemo.js', function() {
 
       // 3.) Run the actual test.
       var dict = new DictionaryPubDictionaries();
-      dict.getMatchesForString(str, {filter: {dictID: dictID}}, (err, res) => {
+      dict.getMatchesForString(str, {filter: {dictID: [dictID]}}, (err, res) => {
         expect(err).to.equal(null);
         res.items.should.deep.equal([
           {
             id:     'http://purl.obolibrary.org/obo/GO_0007114',
-            dictID: dictID,
+            dictID: [dictID],
             str:    'cell budding',
             type:   'S',
             z: {
@@ -357,7 +357,7 @@ describe('DictionaryRemoteDemo.js', function() {
           },
           {
             id:     'http://purl.obolibrary.org/obo/GO_0032060',
-            dictID: dictID,
+            dictID: [dictID],
             str:    'cell blebbing',
             type:   'S',
             z: {

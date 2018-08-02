@@ -50,9 +50,9 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
   getEntries(options, cb) {
     var o = this._prepGetOptions(options, ['id', 'dictID']);
     var url = this.urlGetEntries
-      .replace('$filterID'    , o.filter.id.join(','))
+      .replace('$filterID'    , o.filter.id    .join(','))
       .replace('$filterDictID', o.filter.dictID.join(','))
-      .replace('$z'           , o.z       .join(','))
+      .replace('$z'           , o.z            .join(','))
       .replace('$sort'        , o.sort)  // = 'dictID', 'id', or 'str'.
       .replace('$page'        , o.page)
       .replace('$perPage'     , o.perPage);
@@ -78,7 +78,7 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
       .replace('$str'         , encodeURIComponent(str))
       .replace('$filterDictID', o.filter.dictID.join(','))
       .replace('$sortD'       , o.sort  .dictID.join(','))
-      .replace('$z'           , o.z       .join(','))
+      .replace('$z'           , o.z            .join(','))
       .replace('$page'        , o.page)
       .replace('$perPage'     , o.perPage);
 
@@ -92,25 +92,36 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
   }
 
 
-  // Returns an `options` obj. in standard form like: `{filter: {dictID:[],..}, ..}`.
-  _prepGetOptions(options, filterKeys = [], sortKeys) {
-    var o = Dictionary.prepGetOptions(options, filterKeys, sortKeys);
+  // Returns an `options` object, brought into standard form:
+  // - it ensures that `options` has `filter` property,
+  //   and also a `sort` property (only if a `sortProps[]` argument is given);
+  // - it ensures that these have certain subproperties, as requested in arg2&3;
+  //   each newly created subprops will be an empty Array;
+  // - it URL-encodes the Strings in the existing subproperties' arrays;
+   // - it prepares `z`, `page`, and `perPage` to be put in a URL.
+  _prepGetOptions(options, filterProps = [], sortProps) {
+    var o = { filter: {} };
+    if (sortProps)  o.sort = {}; // If given `sortProps`, ensure `o.sort` exists.
+    o = Object.assign(o, options);
+
     var enc = encodeURIComponent;
 
-    filterKeys.forEach(k => {  // Convert any `false` to `[]`, then encode all.
+    // `o.filter` is an Object, and its props are Arrays.  URL-encode the elems.
+    filterProps.forEach(k => {
       o.filter[k] = (o.filter[k] || []).map(s => enc(s));
     });
 
-    if (sortKeys) { // If a `sortKeys` is given, `o.sort` is an Array, else Str.
-      sortKeys = sortKeys.forEach(k => {
+    // If a `sortProps` is given, then `o.sort` is an Object like `o.filter`.
+    if (sortProps) {
+      sortProps = sortProps.forEach(k => {
         o.sort[k] = (o.sort[k] || []).map(s => enc(s));
       });
     }
-    else  o.sort = enc(o.sort || '');
+    else  o.sort = enc(o.sort || '');  // Else, `o.sort` is just a String.
 
-    o.z =  // Make `o.z` a join()'able array.
+    // Make `o.z` a join()'able array of URL-encoded Strings.
+    o.z =
       (typeof o.z === 'undefined' || o.z === true) ? ['true'] :
-      !o.z ? ['false'] :
       [].concat(o.z).map(s => enc(s));
 
     o.page    = enc(o.page    || '');
