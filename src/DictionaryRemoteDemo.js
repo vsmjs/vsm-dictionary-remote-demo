@@ -43,7 +43,7 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
       .replace('$sort'      , o.sort)  // = 'id' or 'name'.
       .replace('$page'      , o.page)
       .replace('$perPage'   , o.perPage);
-    this._request(url, (err, items) => cb(err, {items}));
+    this._request(url, (err, arr) => cb(err, { items: arr }));
   }
 
 
@@ -56,21 +56,11 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
       .replace('$sort'        , o.sort)  // = 'dictID', 'id', or 'str'.
       .replace('$page'        , o.page)
       .replace('$perPage'     , o.perPage);
-    this._request(url, (err, items) => cb(err, {items}));
+    this._request(url, (err, arr) => cb(err, { items: arr }));
   }
 
 
-  getRefTerms(options, cb) {
-    var o = this._prepGetOptions(options, ['str']);
-    var url = this.urlGetRefTerms
-      .replace('$filterStr', o.filter.str.join(','))
-      .replace('$page'     , o.page)
-      .replace('$perPage'  , o.perPage);
-    this._request(url, (err, items) => cb(err, {items}));
-  }
-
-
-  getMatchesForString(str, options, cb) {
+  getEntryMatchesForString(str, options, cb) {
     if (!str)  return cb(null, {items: []});
 
     var o = this._prepGetOptions(options, ['dictID'], ['dictID']);
@@ -82,13 +72,9 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
       .replace('$page'        , o.page)
       .replace('$perPage'     , o.perPage);
 
-    this._request(url, (err, arr) => {
-      if (err)  return cb(err);
-      // In reality, some processing on the received array would happen first.
-      super.addExtraMatchesForString(str, arr, o, (err, res) => {
-        cb(null, { items: err ? arr : res });
-      });
-    });
+    // When using a real, third party database-server, some processing on the
+    // received array/data would happen first.
+    this._request(url, (err, arr) => cb(err, { items: arr }));
   }
 
 

@@ -1,6 +1,6 @@
 {
   "name": "vsm-dictionary-remote-demo",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Small demo implementation of how a VSM-dictionary could interface with a server's API",
   "main": "src/DictionaryRemoteDemo.js",
   "scripts": {
@@ -42,7 +42,7 @@
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
-    "vsm-dictionary": "^2.0.0",
+    "vsm-dictionary": "^2.2.1",
     "xmlhttprequest": "^1.8.0"
   }
 }

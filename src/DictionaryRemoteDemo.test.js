@@ -29,7 +29,8 @@ describe('DictionaryRemoteDemo.js', function() {
   });
 
 
-  // Make a shorthand function, for making HTTP-replies with a stringified array,
+  // Make a shorthand function, for preparing HTTP-replies with a stringified
+  // array,
   // so instead of:     `nock.reply(200, () => JSON.stringify(['a', 'b']));`,
   // we can just write: `nock.reply(...R('a', 'b'));`.
   var R = (...args) => [200, () => JSON.stringify([...args])];
@@ -54,7 +55,7 @@ describe('DictionaryRemoteDemo.js', function() {
         });
     });
 
-    it('returns a non-empty default options object when `options` is `{}`',
+    it('returns a default, non-empty options object when `options` is `{}`',
       function() {
       dict._prepGetOptions({}, []).should.deep.equal(
         { filter: {}, sort: '', z: [ 'true' ], page: '', perPage: '' } );
@@ -163,33 +164,6 @@ describe('DictionaryRemoteDemo.js', function() {
   });
 
 
-  describe('getRefTerms()', function() {
-    it('calls its URL with given options filled in; ' +
-      'and returns the data it got back, JSON-parsed', function(cb) {
-      var opt = {filter: {str: ['a', 'b']}, page: 2, perPage: 5};
-      nock(urlBase)
-        .get('/ref?str=a,b&page=2&perPage=5')
-        .reply(...R('test'));
-      dict.getRefTerms(opt, (err, res) => {
-        expect(err).to.equal(null);
-        res.should.deep.equal({items: ['test']});
-        cb();
-      });
-    });
-
-    it('calls its URL, also with no options given', function(cb) {
-      nock(urlBase)
-        .get('/ref?str=&page=&perPage=')
-        .reply(...R('test'));
-      dict.getRefTerms({}, (err, res) => {
-        expect(err).to.equal(null);
-        res.should.deep.equal({items: ['test']});
-        cb();
-      });
-    });
-  });
-
-
   describe('getMatchesForString()', function() {
     it('calls its URL with given options filled in, URL-encoded; ' +
       'and returns the data it got back, JSON-parsed', function(cb) {
@@ -240,7 +214,20 @@ describe('DictionaryRemoteDemo.js', function() {
         .reply(...R('test'));
       dict.getMatchesForString('5', {}, (err, res) => {
         res.should.deep.equal({items: [
-          { id:'00:5e+0', dictID:'00', str :'5', descr:'number', type:'N' },
+          { id:'00:5e+0', dictID:'00', str:'5', descr:'number', type:'N' },
+          'test',
+        ]});
+        cb();
+      });
+    });
+
+    it('lets the parent class add a default refTerm match', function(cb) {
+      nock(urlBase)
+        .get('/mat?q=it&dictID=&sort=&page=&perPage=')
+        .reply(...R('test'));
+      dict.getMatchesForString('it', {}, (err, res) => {
+        res.should.deep.equal({items: [
+          { id:'', dictID:'', str:'it', descr:'referring term', type:'R' },
           'test',
         ]});
         cb();
@@ -313,7 +300,7 @@ describe('DictionaryRemoteDemo.js', function() {
       nock('http://pubdictionaries.org')
         .get(`/dictionaries/${encodeURIComponent(dictID)}` +
              `/prefix_completion?term=${encodeURIComponent(str)}`)
-        .reply(...R( // This is a copy of data once returned by the real server:
+        .reply(...R(  // We use a copy of data once returned by the real server:
           {
             created_at: '2016-10-23T18:19:08Z',
             dictionary_id: 2,
