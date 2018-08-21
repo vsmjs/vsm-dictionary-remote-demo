@@ -149,7 +149,8 @@ function getNewMatches(dict, str, options, input, dictInput, output) {
       s += matchToString(res.items[i]) + '\n';
     }
     // Place the results, but only if the inputs haven't changed yet.
-    if (input.value == str  &&  dictInput.value == options.filter.dictID[0]) {
+    if (input.value == str  &&  ( !dictInput || 
+        dictInput.value == options.filter.dictID[0] )) {
       output.innerHTML = s;
     }
   });
