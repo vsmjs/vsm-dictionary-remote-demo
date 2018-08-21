@@ -1,9 +1,10 @@
 {
   "name": "vsm-dictionary-remote-demo",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Small demo implementation of how a VSM-dictionary could interface with a server's API",
   "main": "src/DictionaryRemoteDemo.js",
   "scripts": {
+    "lint": "eslint src demo",
     "test": "mocha \"src/**/*.test.js\" --check-leaks",
     "testw": "mocha \"src/**/*.test.js\" --check-leaks --watch",
     "start": "npm run demo",
@@ -34,6 +35,7 @@
     "babel-loader": "^8.0.0-beta.0",
     "chai": "^4.1.2",
     "copy-webpack-plugin": "^4.5.0",
+    "eslint": "^5.4.0",
     "html-webpack-plugin": "^2.30.1",
     "mocha": "^5.0.1",
     "nock": "^9.1.9",
@@ -42,7 +44,7 @@
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
-    "vsm-dictionary": "^2.3.0",
+    "vsm-dictionary": "^2.4.1",
     "xmlhttprequest": "^1.8.0"
   }
 }

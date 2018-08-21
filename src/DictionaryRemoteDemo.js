@@ -84,7 +84,7 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
   // - it ensures that these have certain subproperties, as requested in arg2&3;
   //   each newly created subprops will be an empty Array;
   // - it URL-encodes the Strings in the existing subproperties' arrays;
-   // - it prepares `z`, `page`, and `perPage` to be put in a URL.
+  // - it prepares `z`, `page`, and `perPage` to be put in a URL.
   _prepGetOptions(options, filterProps = [], sortProps) {
     var o = { filter: {} };
     if (sortProps)  o.sort = {}; // If given `sortProps`, ensure `o.sort` exists.
@@ -106,8 +106,7 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
     else  o.sort = enc(o.sort || '');  // Else, `o.sort` is just a String.
 
     // Make `o.z` a join()'able array of URL-encoded Strings.
-    o.z =
-      (typeof o.z === 'undefined' || o.z === true) ? ['true'] :
+    o.z = (typeof o.z === 'undefined' || o.z === true) ? ['true'] :
       [].concat(o.z).map(s => enc(s));
 
     o.page    = enc(o.page    || '');
@@ -156,7 +155,7 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
             }
             cb(null, arr);
           }
-          catch (err) { cb(err); }
+          catch (err) { cb(err) }
         }
       }
     };
@@ -164,4 +163,4 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
     req.send();
   }
 
-}
+};

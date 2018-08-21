@@ -3,6 +3,10 @@ const chai = require('chai');  chai.should();
 const expect = chai.expect;
 const nock = require('nock');
 
+// Allow callbacks to look like "(err, res) => .." even if not using these args.
+/* eslint no-unused-vars: ['error', { 'argsIgnorePattern': '^err|res$' }] */
+
+
 
 describe('DictionaryRemoteDemo.js', function() {
 
@@ -38,7 +42,7 @@ describe('DictionaryRemoteDemo.js', function() {
 
   describe('_prepGetOptions()', function() {
     it('properly encodes the `options` properties\' values as URI components ' +
-      'and also adds a `z`-property' , function() {
+       'and also adds a `z`-property' , function() {
       var opt = {
         filter: { id: ['A$', 'B$'], name: ['Ab C'] },
         sort: 'id',
@@ -55,14 +59,14 @@ describe('DictionaryRemoteDemo.js', function() {
         });
     });
 
-    it('returns a default, non-empty options object when `options` is `{}`',
-      function() {
+    it('returns a default, non-empty options object when `options` is ' +
+       '`{}`', function() {
       dict._prepGetOptions({}, []).should.deep.equal(
         { filter: {}, sort: '', z: [ 'true' ], page: '', perPage: '' } );
     });
 
     it('adds a proper sort property, when called with sortKeys (3rd arg) and ' +
-      'no sort property is defined in the initial options object', function() {
+       'no sort property is defined in the initial options object', function() {
       dict._prepGetOptions(
         { filter: { dictID: ['somedictID'] } }, ['dictID'], ['dictID']
       )
@@ -79,7 +83,7 @@ describe('DictionaryRemoteDemo.js', function() {
 
   describe('getDictInfos()', function() {
     it('calls its URL with given options filled in, URL-encoded; ' +
-      'and returns the data it got back, JSON-parsed', function(cb) {
+       'and returns the data it got back, JSON-parsed', function(cb) {
       var opt = {
         filter: {id: ['A', 'B'], name: ['Ab C']}, sort: 'id',
         page: 2,  perPage: 5
@@ -113,7 +117,7 @@ describe('DictionaryRemoteDemo.js', function() {
 
   describe('getEntries()', function() {
     it('calls its URL with given options filled in, URL-encoded; ' +
-      'and returns the data it got back, JSON-parsed', function(cb) {
+       'and returns the data it got back, JSON-parsed', function(cb) {
       var opt = {
         filter: { id: ['A:01'], dictID: ['A'] },
         sort: 'dictID',
@@ -166,7 +170,7 @@ describe('DictionaryRemoteDemo.js', function() {
 
   describe('getMatchesForString()', function() {
     it('calls its URL with given options filled in, URL-encoded; ' +
-      'and returns the data it got back, JSON-parsed', function(cb) {
+       'and returns the data it got back, JSON-parsed', function(cb) {
       var opt = {
         filter: {dictID: ['A', 'B', 'C']}, sort: {dictID: ['A', 'B']},
         z: 'x',  page: 2,  perPage: 5
@@ -186,7 +190,7 @@ describe('DictionaryRemoteDemo.js', function() {
       nock(urlBase)
         .get('/mat?q=x&dictID=&sort=&page=&perPage=')
         .reply(...R('test'))
-        .on('replied', () => { called = true; });
+        .on('replied', () => { called = true });
       dict.getMatchesForString('x', {}, (err, res) => {
         expect(err).to.equal(null);
         called.should.equal(true);  // Test that this works, for the next test.
@@ -196,10 +200,10 @@ describe('DictionaryRemoteDemo.js', function() {
     });
 
     it('for an empty string, makes no server-request and ' +
-        'returns an empty list', function(cb) {
+       'returns an empty list', function(cb) {
       var called = false;
       nock(urlBase)
-        .on('replied', () => { called = true; });
+        .on('replied', () => { called = true });
       dict.getMatchesForString('', {}, (err, res) => {
         expect(err).to.equal(null);
         called.should.equal(false);  // Test that no request was made.
@@ -245,8 +249,8 @@ describe('DictionaryRemoteDemo.js', function() {
       });
     });
 
-    it('reports error when the server does not reply with a JSON array',
-      function(cb) {
+    it('reports error when the server does not reply with a ' +
+       'JSON array', function(cb) {
       nock(urlBase)
         .get('/mat?q=5&dictID=&sort=&page=&perPage=')
         .reply(200, () => '"not an Array"');
@@ -259,8 +263,8 @@ describe('DictionaryRemoteDemo.js', function() {
 
 
   describe('Simple demo-subclass that fetches & parses string-matches ' +
-    'from (fake-served) pubdictionaries.org (using 1 subdictionary only)',
-    function() {
+    'from (fake-served) pubdictionaries.org (using 1 subdictionary ' +
+    'only)', function() {
 
     // 1.) Make a subclass of DictionaryRemoteDemo, that adds a layer of code
     // that parses the specific data that pubdictionaries.org returns.
@@ -273,8 +277,7 @@ describe('DictionaryRemoteDemo.js', function() {
       getMatchesForString(str, options, cb) {
         super.getMatchesForString(str, options, (err, res) => {
           if (err)  return cb(err);
-          var arr = res.items.map(e =>
-            e.type ?
+          var arr = res.items.map(e => e.type ?
             e :  // Don't convert N/R match-objects generated by parent class.
             ({
               id:     e.identifier,
