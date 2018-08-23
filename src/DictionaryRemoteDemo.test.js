@@ -8,7 +8,7 @@ const nock = require('nock');
 
 
 
-describe('DictionaryRemoteDemo.js', function() {
+describe('DictionaryRemoteDemo.js', () => {
 
   var urlBase = 'http://test';
   var dict = new DictionaryRemoteDemo({base: urlBase});
@@ -19,16 +19,16 @@ describe('DictionaryRemoteDemo.js', function() {
   // specified URLs.
   // (Note: 'nock' works with Node.js, while the 'sinon' package would override
   //  the XMLHttpRequest object that is only available in browser-environments).
-  before(function() {
+  before(() => {
     // [Disabled this line until nock's `enableNetConnect()` works again...]:
     // nock.disableNetConnect();
   });
 
-  afterEach(function() {
+  afterEach(() => {
     nock.cleanAll();
   });
 
-  after(function() {
+  after(() => {
     nock.enableNetConnect();
   });
 
@@ -40,9 +40,9 @@ describe('DictionaryRemoteDemo.js', function() {
   var R = (...args) => [200, () => JSON.stringify([...args])];
 
 
-  describe('_prepGetOptions()', function() {
+  describe('_prepGetOptions()', () => {
     it('properly encodes the `options` properties\' values as URI components ' +
-       'and also adds a `z`-property' , function() {
+       'and also adds a `z`-property' , () => {
       var opt = {
         filter: { id: ['A$', 'B$'], name: ['Ab C'] },
         sort: 'id',
@@ -60,13 +60,13 @@ describe('DictionaryRemoteDemo.js', function() {
     });
 
     it('returns a default, non-empty options object when `options` is ' +
-       '`{}`', function() {
+       '`{}`', () => {
       dict._prepGetOptions({}, []).should.deep.equal(
         { filter: {}, sort: '', z: [ 'true' ], page: '', perPage: '' } );
     });
 
     it('adds a proper sort property, when called with sortKeys (3rd arg) and ' +
-       'no sort property is defined in the initial options object', function() {
+       'no sort property is defined in the initial options object', () => {
       dict._prepGetOptions(
         { filter: { dictID: ['somedictID'] } }, ['dictID'], ['dictID']
       )
@@ -81,9 +81,9 @@ describe('DictionaryRemoteDemo.js', function() {
   });
 
 
-  describe('getDictInfos()', function() {
+  describe('getDictInfos()', () => {
     it('calls its URL with given options filled in, URL-encoded; ' +
-       'and returns the data it got back, JSON-parsed', function(cb) {
+       'and returns the data it got back, JSON-parsed', cb => {
       var opt = {
         filter: {id: ['A', 'B'], name: ['Ab C']}, sort: 'id',
         page: 2,  perPage: 5
@@ -102,7 +102,7 @@ describe('DictionaryRemoteDemo.js', function() {
       });
     });
 
-    it('calls its URL, also with no options given', function(cb) {
+    it('calls its URL, also with no options given', cb => {
       nock(urlBase)
         .get('/dic?id=&name=&sort=&page=&perPage=')
         .reply(...R('test'));
@@ -115,9 +115,9 @@ describe('DictionaryRemoteDemo.js', function() {
   });
 
 
-  describe('getEntries()', function() {
+  describe('getEntries()', () => {
     it('calls its URL with given options filled in, URL-encoded; ' +
-       'and returns the data it got back, JSON-parsed', function(cb) {
+       'and returns the data it got back, JSON-parsed', cb => {
       var opt = {
         filter: { id: ['A:01'], dictID: ['A'] },
         sort: 'dictID',
@@ -133,7 +133,7 @@ describe('DictionaryRemoteDemo.js', function() {
       });
     });
 
-    it('calls its URL, also with no options given', function(cb) {
+    it('calls its URL, also with no options given', cb => {
       nock(urlBase)
         .get('/ent?id=&dictID=&z=true&sort=&page=&perPage=')
         .reply(...R('test'));
@@ -144,7 +144,7 @@ describe('DictionaryRemoteDemo.js', function() {
       });
     });
 
-    it('calls its URL, also when requesting no `z` property', function(cb) {
+    it('calls its URL, also when requesting no `z` property', cb => {
       nock(urlBase)
         .get('/ent?id=&dictID=&z=&sort=&page=&perPage=')
         .reply(...R('test'));
@@ -155,7 +155,7 @@ describe('DictionaryRemoteDemo.js', function() {
       });
     });
 
-    it('calls its URL, also with z-pruning', function(cb) {
+    it('calls its URL, also with z-pruning', cb => {
       nock(urlBase)
         .get('/ent?id=&dictID=&z=x,y,z,A%24&sort=&page=&perPage=')
         .reply(...R('test'));
@@ -168,9 +168,9 @@ describe('DictionaryRemoteDemo.js', function() {
   });
 
 
-  describe('getMatchesForString()', function() {
+  describe('getMatchesForString()', () => {
     it('calls its URL with given options filled in, URL-encoded; ' +
-       'and returns the data it got back, JSON-parsed', function(cb) {
+       'and returns the data it got back, JSON-parsed', cb => {
       var opt = {
         filter: {dictID: ['A', 'B', 'C']}, sort: {dictID: ['A', 'B']},
         z: 'x',  page: 2,  perPage: 5
@@ -185,7 +185,7 @@ describe('DictionaryRemoteDemo.js', function() {
       });
     });
 
-    it('calls its URL, also with no options given', function(cb) {
+    it('calls its URL, also with no options given', cb => {
       var called = false;
       nock(urlBase)
         .get('/mat?q=x&dictID=&sort=&page=&perPage=')
@@ -200,7 +200,7 @@ describe('DictionaryRemoteDemo.js', function() {
     });
 
     it('for an empty string, makes no server-request and ' +
-       'returns an empty list', function(cb) {
+       'returns an empty list', cb => {
       var called = false;
       nock(urlBase)
         .on('replied', () => { called = true });
@@ -212,7 +212,7 @@ describe('DictionaryRemoteDemo.js', function() {
       });
     });
 
-    it('lets the parent class add a number-string match', function(cb) {
+    it('lets the parent class add a number-string match', cb => {
       nock(urlBase)
         .get('/mat?q=5&dictID=&sort=&page=&perPage=')
         .reply(...R('test'));
@@ -225,7 +225,7 @@ describe('DictionaryRemoteDemo.js', function() {
       });
     });
 
-    it('lets the parent class add a default refTerm match', function(cb) {
+    it('lets the parent class add a default refTerm match', cb => {
       nock(urlBase)
         .get('/mat?q=it&dictID=&sort=&page=&perPage=')
         .reply(...R('test'));
@@ -238,7 +238,7 @@ describe('DictionaryRemoteDemo.js', function() {
       });
     });
 
-    it('reports JSON.parse() errors', function(cb) {
+    it('reports JSON.parse() errors', cb => {
       nock(urlBase)
         .get('/mat?q=5&dictID=&sort=&page=&perPage=')
         .reply(200, () => 'not a JSON string');  // Make it send invalid data.
@@ -249,8 +249,7 @@ describe('DictionaryRemoteDemo.js', function() {
       });
     });
 
-    it('reports error when the server does not reply with a ' +
-       'JSON array', function(cb) {
+    it('reports error when the server does not reply with a JSON array', cb => {
       nock(urlBase)
         .get('/mat?q=5&dictID=&sort=&page=&perPage=')
         .reply(200, () => '"not an Array"');
@@ -264,7 +263,7 @@ describe('DictionaryRemoteDemo.js', function() {
 
   describe('Simple demo-subclass that fetches & parses string-matches ' +
     'from (fake-served) pubdictionaries.org (using 1 subdictionary ' +
-    'only)', function() {
+    'only)', () => {
 
     // 1.) Make a subclass of DictionaryRemoteDemo, that adds a layer of code
     // that parses the specific data that pubdictionaries.org returns.
@@ -295,7 +294,7 @@ describe('DictionaryRemoteDemo.js', function() {
       }
     }
 
-    it('returns match-objects for entries that match a string', function(cb) {
+    it('returns match-objects for entries that match a string', cb => {
       // 2.) Set up 'nock' so it replies to the URL
       // that DictionaryPubDictionaries is supposed to request to.
       var str = 'cell b';
