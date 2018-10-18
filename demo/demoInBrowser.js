@@ -177,5 +177,5 @@ function matchToString(m) {
       .replace(/"descr"/g, 'descr') +
     n);
 
-  return '{' + arr.join('\', ') + '}';
+  return '{' + arr.join('\', ') + '\'}';
 }
