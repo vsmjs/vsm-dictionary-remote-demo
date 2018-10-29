@@ -44,14 +44,14 @@ describe('DictionaryRemoteDemo.js', () => {
     it('properly encodes the `options` properties\' values as URI components ' +
        'and also adds a `z`-property' , () => {
       var opt = {
-        filter: { id: ['A$', 'B$'], name: ['Ab C'] },
+        filter: { id: ['A$', 'B$'] },
         sort: 'id',
         page: 2,
         perPage: 5
       };
-      dict._prepGetOptions(opt, ['id', 'name'])
+      dict._prepGetOptions(opt, ['id'])
         .should.deep.equal({
-          filter: { id: [ 'A%24', 'B%24' ], name: [ 'Ab%20C' ] },
+          filter: { id: [ 'A%24', 'B%24' ] },
           sort: 'id',
           page: '2',
           perPage: '5',
@@ -85,7 +85,7 @@ describe('DictionaryRemoteDemo.js', () => {
     it('calls its URL with given options filled in, URL-encoded; ' +
        'and returns the data it got back, JSON-parsed', cb => {
       var opt = {
-        filter: {id: ['A', 'B'], name: ['Ab C']}, sort: 'id',
+        filter: {id: ['A', 'B']},
         page: 2,  perPage: 5
       };
       // - A test only succeeds if 'dict' actually requests the specified URL.
@@ -93,7 +93,7 @@ describe('DictionaryRemoteDemo.js', () => {
       //   it is given by a server, so we do not need to bother with real
       //   dictInfo/entry/etc-objects.
       nock(urlBase)
-        .get('/dic?id=A,B&name=Ab%20C&sort=id&page=2&perPage=5')
+        .get('/dic?id=A,B&page=2&perPage=5')
         .reply(...R('test'));  // See explanation above.
       dict.getDictInfos(opt, (err, res) => {
         expect(err).to.equal(null);
@@ -104,7 +104,7 @@ describe('DictionaryRemoteDemo.js', () => {
 
     it('calls its URL, also with no options given', cb => {
       nock(urlBase)
-        .get('/dic?id=&name=&sort=&page=&perPage=')
+        .get('/dic?id=&page=&perPage=')
         .reply(...R('test'));
       dict.getDictInfos({}, (err, res) => {
         expect(err).to.equal(null);

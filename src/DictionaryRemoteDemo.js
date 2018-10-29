@@ -25,7 +25,7 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
     var pp = '&page=$page&perPage=$perPage';
 
     this.urlGetDictInfos = opt.urlGetDictInfos ||
-            base + '/dic?id=$filterID&name=$filterName&sort=$sort' + pp;
+            base + '/dic?id=$filterID' + pp;
     this.urlGetEntries   = opt.urlGetEntries   ||
             base + '/ent?id=$filterID&dictID=$filterDictID&z=$z&sort=$sort'+ pp;
     this.urlGetRefTerms  = opt.urlGetRefTerms  ||
@@ -36,11 +36,9 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
 
 
   getDictInfos(options, cb) {
-    var o = this._prepGetOptions(options, ['id', 'name']);
+    var o = this._prepGetOptions(options, ['id']);
     var url = this.urlGetDictInfos
       .replace('$filterID'  , o.filter.id  .join(','))
-      .replace('$filterName', o.filter.name.join(','))
-      .replace('$sort'      , o.sort)  // = 'id' or 'name'.
       .replace('$page'      , o.page)
       .replace('$perPage'   , o.perPage);
     this._request(url, (err, arr) => cb(err, { items: arr }));
