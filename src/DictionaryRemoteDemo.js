@@ -78,13 +78,15 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
   }
 
 
-  // Returns an `options` object, brought into standard form:
-  // - it ensures that `options` has `filter` property,
-  //   and also a `sort` property (only if a `sortProps[]` argument is given);
-  // - it ensures that these have certain subproperties, as requested in arg2&3;
-  //   each newly created subprops will be an empty Array;
-  // - it URL-encodes the Strings in the existing subproperties' arrays;
-  // - it prepares `z`, `page`, and `perPage` to be put in a URL.
+  /**
+   * Returns an `options` object, brought into standard form:
+   * - it ensures that `options` has `filter` property,
+   *   and also a `sort` property (only if a `sortProps[]` argument is given);
+   * - it ensures that these have certain subproperties, as requested in arg2&3;
+   *   each newly created subprop will be an empty Array;
+   * - it URL-encodes the Strings in the existing subproperties' arrays;
+   * - it prepares `z`, `page`, and `perPage` to be put in a URL.
+   */
   _prepGetOptions(options, filterProps = [], sortProps) {
     var o = { filter: {} };
     if (sortProps)  o.sort = {}; // If given `sortProps`, ensure `o.sort` exists.
