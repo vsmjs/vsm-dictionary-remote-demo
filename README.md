@@ -104,3 +104,32 @@ plus a field to choose one of its ('sub'-)dictionaries.
 
 The demo works by making a Webpack dev-server bundle all source code 
 (VsmDictionaryRemoteDemo and its dependencies) and serve it to the browser.
+
+This is useful during development, to see immediate effects of changes
+to the source code (excl. the demo code).
+
+<br>
+
+## 'Build' configuration & demo
+
+To use a VsmDictionary in Node.js, one can simply run `npm install` and then
+use `require()`.  
+But it is also convenient to have a version of the code that can just
+be loaded via a &lt;script&gt;-tag in the browser.
+
+Therefore, we included `webpack.config.js` (note: the one in the root folder,
+_not_ the one in the 'demo' folder), which is a Webpack configuration file for
+generating such a browser-ready package.  
+
+By running `npm build`, the built file will appear in a 'dist' subfolder.  
+A demo-use of this file can then be seen by opening `demo-build.html`
+(in the 'demo' folder). (It includes a
+`<script src="../dist/vsm-dictionary-remote-demo.min.js"></script>` tag).  
+So after the build step, `demo-build.html` does not need Webpack to run.
+
+Note: at the time of writing (Feb. 2019), there seems to be an issue
+with conflicting Webpack-dependencies when running a fresh `npm install`.  
+Therefore, in order to build your own VsmDictionary, it is recommended that
+you copy the `package-lock.json` and `package.json` files from this package
+and use them as a starting point for your own project, because these files refer
+to a set of non-conflicting versions of the dependencies.

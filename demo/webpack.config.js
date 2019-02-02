@@ -1,5 +1,5 @@
 /*
-Webpack is only used for creating an interactive demo in the browser.
+This Webpack-config is only used for creating an interactive demo in the browser.
 
 It bundles all modules (in-memory),
 starts the webpack development server with live-reload, and
