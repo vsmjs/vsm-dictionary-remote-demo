@@ -14,6 +14,9 @@ into an `{ items: [...] }` object.
 
 const Dictionary = require('vsm-dictionary');
 
+const encodeURIComponentRFC3986 = s => encodeURIComponent(s)
+  .replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+
 
 module.exports = class DictionaryRemoteDemo extends Dictionary {
 
@@ -63,7 +66,7 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
 
     var o = this._prepGetOptions(options, ['dictID'], ['dictID']);
     var url = this.urlGetMatches
-      .replace('$str'         , encodeURIComponent(str))
+      .replace('$str'         , encodeURIComponentRFC3986(str))
       .replace('$filterDictID', o.filter.dictID.join(','))
       .replace('$sortD'       , o.sort  .dictID.join(','))
       .replace('$z'           , o.z            .join(','))
@@ -90,7 +93,7 @@ module.exports = class DictionaryRemoteDemo extends Dictionary {
     if (sortProps)  o.sort = {}; // If given `sortProps`, ensure `o.sort` exists.
     o = Object.assign(o, options);
 
-    var enc = encodeURIComponent;
+    var enc = encodeURIComponentRFC3986;
 
     // `o.filter` is an Object, and its props are Arrays.  URL-encode the elems.
     filterProps.forEach(k => {

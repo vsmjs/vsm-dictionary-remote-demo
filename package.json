@@ -1,6 +1,6 @@
 {
   "name": "vsm-dictionary-remote-demo",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Small demo implementation of how a VSM-dictionary could interface with a server's API",
   "main": "src/DictionaryRemoteDemo.js",
   "scripts": {

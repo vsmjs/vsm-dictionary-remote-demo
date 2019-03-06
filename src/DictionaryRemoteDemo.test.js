@@ -44,14 +44,14 @@ describe('DictionaryRemoteDemo.js', () => {
     it('properly encodes the `options` properties\' values as URI components ' +
        'and also adds a `z`-property' , () => {
       var opt = {
-        filter: { id: ['A$', 'B$'] },
+        filter: { id: ['A$', 'B$*'] },
         sort: 'id',
         page: 2,
         perPage: 5
       };
       dict._prepGetOptions(opt, ['id'])
         .should.deep.equal({
-          filter: { id: [ 'A%24', 'B%24' ] },
+          filter: { id: [ 'A%24', 'B%24%2A' ] },
           sort: 'id',
           page: '2',
           perPage: '5',
