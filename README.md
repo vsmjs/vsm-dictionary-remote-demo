@@ -133,3 +133,9 @@ Therefore, in order to build your own VsmDictionary, it is recommended that
 you copy the `package-lock.json` and `package.json` files from this package
 and use them as a starting point for your own project, because these files refer
 to a set of non-conflicting versions of the dependencies.
+
+<br>
+
+## License
+
+This project is licensed under the AGPL license - see [LICENSE.md](LICENSE.md).
