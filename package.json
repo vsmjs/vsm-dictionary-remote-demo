@@ -22,14 +22,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vsmjs/vsm-dictionary-remote-demo"
+    "url": "git+https://github.com/vsm/vsm-dictionary-remote-demo"
   },
   "author": "Steven Vercruysse (http://stcruy.com)",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/vsmjs/vsm-dictionary-remote-demo/issues"
+    "url": "https://github.com/vsm/vsm-dictionary-remote-demo/issues"
   },
-  "homepage": "https://github.com/vsmjs/vsm-dictionary-remote-demo#readme",
+  "homepage": "https://github.com/vsm/vsm-dictionary-remote-demo#readme",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
